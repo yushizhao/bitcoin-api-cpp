@@ -992,6 +992,23 @@ mininginfo_t BitcoinAPI::getmininginfo() {
 	return ret;
 }
 
+mminfo_t BitcoinAPI::getauxblock() {
+	string command = "getauxblock";
+	Value params, result;
+	mminfo_t ret;
+
+	result = sendcommand(command, params);
+
+	ret.hash = result["hash"].asString();
+	ret.previousblockhash = result["previousblockhash"].asString();
+	ret.coinbasevalue = result["coinbasevalue"].asInt();
+	ret.bits = result["bits"].asString();
+	ret.height = result["height"].asInt();
+	ret.target = result["target"].asString();
+
+	return ret;
+}
+
 
 txsinceblock_t BitcoinAPI::listsinceblock(const string& blockhash, int target_confirmations) {
 	string command = "listsinceblock";

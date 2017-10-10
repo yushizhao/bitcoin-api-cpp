@@ -269,6 +269,15 @@
 		int hashespersec;
 	};
 
+	struct mminfo_t{
+        std::string hash;
+        std::string previousblockhash;
+        int coinbasevalue;
+        std::string bits;
+        int height;
+        std::string target;
+	};
+
 	struct workdata_t{
 		std::string midstate;
 		std::string data;

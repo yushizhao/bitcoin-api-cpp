@@ -129,6 +129,7 @@ public:
     int gethashespersec();
 
     mininginfo_t getmininginfo();
+    mminfo_t getauxblock();
     workdata_t getwork();
     bool getwork(const std::string& data);
 
