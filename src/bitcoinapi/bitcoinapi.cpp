@@ -1009,6 +1009,12 @@ mminfo_t BitcoinAPI::getauxblock() {
 	return ret;
 }
 
+bool submitauxpow(Json::Value auxpow) {
+    string command = "getauxblock";
+    Value result;
+    result = sendcommand(command, auxpow);
+    return result.asBool();
+} 
 
 txsinceblock_t BitcoinAPI::listsinceblock(const string& blockhash, int target_confirmations) {
 	string command = "listsinceblock";

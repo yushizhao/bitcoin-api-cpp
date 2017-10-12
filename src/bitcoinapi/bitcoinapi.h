@@ -130,6 +130,7 @@ public:
 
     mininginfo_t getmininginfo();
     mminfo_t getauxblock();
+    bool submitauxpow(Json::Value auxpow);
     workdata_t getwork();
     bool getwork(const std::string& data);
 
