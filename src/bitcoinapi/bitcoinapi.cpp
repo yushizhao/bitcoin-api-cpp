@@ -1009,7 +1009,7 @@ mminfo_t BitcoinAPI::getauxblock() {
 	return ret;
 }
 
-bool submitauxpow(Json::Value auxpow) {
+bool BitcoinAPI::submitauxpow(Json::Value auxpow) {
     string command = "getauxblock";
     Value result;
     result = sendcommand(command, auxpow);
