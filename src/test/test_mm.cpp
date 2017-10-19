@@ -7,6 +7,8 @@
 #include <bitcoinapi/bitcoinapi.h>
 #include <bitcoinapi/types.h>
 
+#include <boost/thread.hpp>
+
 using namespace jsonrpc;
 
 std::string username = "rpcuser";
@@ -53,41 +55,52 @@ bool MyStubServer::minedAuxpow(const Json::Value& auxpow)
     return btc.submitauxpow(auxpow);
 }
 
-int main()
-{
-    //call getauxblock    
-    mminfo_t res;
-
-    try
-    {
-        /* Example method - getbalance */
-        res = btc.getauxblock();
-        std::cout << "hash: " << res.hash << std::endl;
-        std::cout << "bits: " << res.bits << std::endl;
-    }
-    catch(BitcoinException e)
-    {
-        std::cerr << e.getMessage() << std::endl;
-    }
-
-    //send mm_info
-    HttpClient httpclient("http://localhost:8382");
-    StubClient c(httpclient);
-    try
-    {
-        c.mergeMiningNote(res.hash,res.bits);
-    }
-    catch (JsonRpcException e)
-    {
-        std::cerr << e.what() << std::endl;
-    }
-
-    //receive and submit block 
-    HttpServer httpserver(8383);
+void open_port(int n) {    
+    HttpServer httpserver(n);
     MyStubServer s(httpserver);
     s.StartListening();
     getchar();
     s.StopListening();
+}
+
+void call_rpc(std::string address) {
+    //call getauxblock    
+    mminfo_t res;
+
+    while (true) {
+        try
+        {
+            res = btc.getauxblock();
+            std::cout << "hash: " << res.hash << std::endl;
+            std::cout << "bits: " << res.bits << std::endl;
+        }
+        catch(BitcoinException e)
+        {
+            std::cerr << e.getMessage() << std::endl;
+        }
+
+        //send mm_info
+        HttpClient httpclient(address);
+        StubClient c(httpclient);
+        try
+        {
+            c.mergeMiningNote(res.hash,res.bits);
+        }
+        catch (JsonRpcException e)
+        {
+            std::cerr << e.what() << std::endl;
+        }
+        boost::this_thread::sleep(boost::posix_time::seconds(3)); 
+    }
+}
+
+int main()
+{
+    boost::thread rpc(call_rpc,"http://localhost:8382");
+    boost::thread port(open_port,8383);
+    
+    rpc.join();    
+    port.join();
     
     return 0;
 }
