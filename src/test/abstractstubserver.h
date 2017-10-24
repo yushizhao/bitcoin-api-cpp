@@ -14,8 +14,8 @@ class AbstractStubServer : public jsonrpc::AbstractServer<AbstractStubServer>
         {
             this->bindAndAddMethod(jsonrpc::Procedure("sayHello", jsonrpc::PARAMS_BY_NAME, jsonrpc::JSON_STRING, "name",jsonrpc::JSON_STRING, NULL), &AbstractStubServer::sayHelloI);
             this->bindAndAddNotification(jsonrpc::Procedure("notifyServer", jsonrpc::PARAMS_BY_NAME,  NULL), &AbstractStubServer::notifyServerI);
-            this->bindAndAddNotification(jsonrpc::Procedure("mergeMiningNote", jsonrpc::PARAMS_BY_NAME, "bits",jsonrpc::JSON_STRING,"hash",jsonrpc::JSON_STRING, NULL), &AbstractStubServer::mergeMiningNoteI);
-            this->bindAndAddMethod(jsonrpc::Procedure("minedAuxpow", jsonrpc::PARAMS_BY_NAME, jsonrpc::JSON_BOOLEAN, "auxpow",jsonrpc::JSON_ARRAY, NULL), &AbstractStubServer::minedAuxpowI);
+            this->bindAndAddMethod(jsonrpc::Procedure("rpc_mergeMiningNote", jsonrpc::PARAMS_BY_POSITION, jsonrpc::JSON_STRING, "param1",jsonrpc::JSON_STRING,"param2",jsonrpc::JSON_STRING, NULL), &AbstractStubServer::rpc_mergeMiningNoteI);
+            this->bindAndAddMethod(jsonrpc::Procedure("rpc_minedAuxpow", jsonrpc::PARAMS_BY_POSITION, jsonrpc::JSON_STRING, "param1",jsonrpc::JSON_STRING,"param2",jsonrpc::JSON_STRING,"param3",jsonrpc::JSON_STRING,"param4",jsonrpc::JSON_ARRAY,"param5",jsonrpc::JSON_INTEGER,"param6",jsonrpc::JSON_ARRAY,"param7",jsonrpc::JSON_INTEGER, NULL), &AbstractStubServer::rpc_minedAuxpowI);
         }
 
         inline virtual void sayHelloI(const Json::Value &request, Json::Value &response)
@@ -27,18 +27,18 @@ class AbstractStubServer : public jsonrpc::AbstractServer<AbstractStubServer>
             (void)request;
             this->notifyServer();
         }
-        inline virtual void mergeMiningNoteI(const Json::Value &request)
+        inline virtual void rpc_mergeMiningNoteI(const Json::Value &request, Json::Value &response)
         {
-            this->mergeMiningNote(request["bits"].asString(), request["hash"].asString());
+            response = this->rpc_mergeMiningNote(request[0u].asString(), request[1u].asString());
         }
-        inline virtual void minedAuxpowI(const Json::Value &request, Json::Value &response)
+        inline virtual void rpc_minedAuxpowI(const Json::Value &request, Json::Value &response)
         {
-            response = this->minedAuxpow(request["auxpow"]);
+            response = this->rpc_minedAuxpow(request[0u].asString(), request[1u].asString(), request[2u].asString(), request[3u], request[4u].asInt(), request[5u], request[6u].asInt());
         }
         virtual std::string sayHello(const std::string& name) = 0;
         virtual void notifyServer() = 0;
-        virtual void mergeMiningNote(const std::string& bits, const std::string& hash) = 0;
-        virtual bool minedAuxpow(const Json::Value& auxpow) = 0;
+        virtual std::string rpc_mergeMiningNote(const std::string& param1, const std::string& param2) = 0;
+        virtual std::string rpc_minedAuxpow(const std::string& param1, const std::string& param2, const std::string& param3, const Json::Value& param4, int param5, const Json::Value& param6, int param7) = 0;
 };
 
 #endif //JSONRPC_CPP_STUB_ABSTRACTSTUBSERVER_H_

@@ -10,25 +10,24 @@
 		"name" : "notifyServer"
 	},
 	{
-		"name": "mergeMiningNote",
-		"params": {
-			"hash": "the hash of a waiting-auxpow block",
-			"bits": "auxpow nbits required by that block"
-		}
+		"name": "rpc_mergeMiningNote",
+		"params": [
+            "auxpow nbits required by that block",
+            "the hash of a waiting-auxpow block"
+		],
+        "returns": "feedback"
 	},
 	{
-		"name": "minedAuxpow",
-		"params": {
-			"auxpow" : [
+		"name": "rpc_minedAuxpow",
+		"params": [
 				"hash: the hash of the block this auxpow belong to",
 				"header: the bitcoin block header",
 				"tx: the coinbase",
-				"txBranch: merkle branch from coinbase to merkle root",
-				"txIndex: should be 0",
-				"chainBranch: merkle branch from block hash to merge mining root",
-				"chainIndex"
-			]
-		},
-		"returns": true
+				["txBranch: merkle branch from coinbase to merkle root"],
+				0,
+				["chainBranch: merkle branch from block hash to merge mining root"],
+				1
+		],
+		"returns": "feedback"
 	}
 ]

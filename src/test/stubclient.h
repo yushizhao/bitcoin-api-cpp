@@ -28,20 +28,30 @@ class StubClient : public jsonrpc::Client
             p = Json::nullValue;
             this->CallNotification("notifyServer",p);
         }
-        void mergeMiningNote(const std::string& bits, const std::string& hash) throw (jsonrpc::JsonRpcException)
+        std::string rpc_mergeMiningNote(const std::string& param1, const std::string& param2) throw (jsonrpc::JsonRpcException)
         {
             Json::Value p;
-            p["bits"] = bits;
-            p["hash"] = hash;
-            this->CallNotification("mergeMiningNote",p);
+            p.append(param1);
+            p.append(param2);
+            Json::Value result = this->CallMethod("rpc_mergeMiningNote",p);
+            if (result.isString())
+                return result.asString();
+            else
+                throw jsonrpc::JsonRpcException(jsonrpc::Errors::ERROR_CLIENT_INVALID_RESPONSE, result.toStyledString());
         }
-        bool minedAuxpow(const Json::Value& auxpow) throw (jsonrpc::JsonRpcException)
+        std::string rpc_minedAuxpow(const std::string& param1, const std::string& param2, const std::string& param3, const Json::Value& param4, int param5, const Json::Value& param6, int param7) throw (jsonrpc::JsonRpcException)
         {
             Json::Value p;
-            p["auxpow"] = auxpow;
-            Json::Value result = this->CallMethod("minedAuxpow",p);
-            if (result.isBool())
-                return result.asBool();
+            p.append(param1);
+            p.append(param2);
+            p.append(param3);
+            p.append(param4);
+            p.append(param5);
+            p.append(param6);
+            p.append(param7);
+            Json::Value result = this->CallMethod("rpc_minedAuxpow",p);
+            if (result.isString())
+                return result.asString();
             else
                 throw jsonrpc::JsonRpcException(jsonrpc::Errors::ERROR_CLIENT_INVALID_RESPONSE, result.toStyledString());
         }
